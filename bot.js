@@ -1,5 +1,5 @@
-const { Telegraf } = require('telegraf');
-const TOKEN = '1699609256:AAG1Iq8avfrlULqnmqgEzyfQd8vZsBOvLZ4';
+const { Telegraf, session, Scenes:{ WizardScene, Stage}, Markup} = require('telegraf');
+const TOKEN ='1699609256:AAG1Iq8avfrlULqnmqgEzyfQd8vZsBOvLZ4' //'1663994003:AAF02oK7kVii4QSXxJ2edLdKuNUkyT47zq4'//'1699609256:AAG1Iq8avfrlULqnmqgEzyfQd8vZsBOvLZ4';
 const bot = new Telegraf(TOKEN);
 const MongoClient = require('mongodb').MongoClient;
 bot.launch();
@@ -17,7 +17,9 @@ bot.start(async (ctx) => {
             callback_data: '/location',
             resize_keyboard: true,
           },
-        ],
+        ],[
+          {text: "Добавить место", callback_data: 'addplace'}
+        ]
       ],
     },
   });
@@ -35,7 +37,21 @@ bot.start(async (ctx) => {
       ],
     },
   });
+  ctx
 });
+
+addkeyboard = {reply_markup:{
+	inline_keyboard:[
+		[{text:"Кафе", callback_data: "cafe"}],
+		[{text:"Достопримечательность", callback_data: "place"}]
+	]
+}}
+
+cancelmore = {reply_markup:{
+  inline_keyboard:[
+    [{text:"Ещё", callback_data: "more"}]
+  ]
+}}
 
 let locs = [];
 
@@ -133,16 +149,128 @@ bot.on('location', (ctx) => {
   }, 6000);
 });
 
-bot.action('/cafe', (ctx, next) => {
-  ctx.reply('Hiiii');
 
-  ctx.replyWithPhoto({ url: locs[2].image });
+i = 0
+const show_cafe = new WizardScene(
+  'show-cafe',
+  ctx =>{
+    ctx.replyWithPhoto({ url: locs[i].image });
+    setTimeout(() => {
+      ctx.reply(locs[i].name + ' - ' + locs[i].desc);
+    }, 1000);
+    setTimeout(() => {
+      ctx.tg.sendLocation(ctx.chat.id, locs[i].x, locs[i].y);
+    }, 2000);
+    setTimeout(() => {
+      if(i===res.length-1) i=0
+      else i++
+      ctx.reply('More?', cancelmore)
+    },3000);
+    return ctx.wizard.next()
+  },
+  ctx =>{
+    ctx.deleteMessage()
+    ctx.scene.leave()
+    if(callback_data='more') ctx.scene.enter('show-cafe')
+  }
+)
 
-  setTimeout(() => {
-    ctx.reply(locs[2].name + ' - ' + locs[2].desc);
-  }, 1000);
+const add_data = new WizardScene(
+	'add-data',
+	ctx => {
+		canceladd = {reply_markup: {
+			inline_keyboard: [
+				[{text:"Отмена", callback_data: "canceladd"}]
+			]
+		}}
+		ctx.reply('Введите название места: ',canceladd);
+		return ctx.wizard.next();
+	},
+	ctx =>{
+    ctx.deleteMessage()
+    ctx.deleteMessage(ctx.message.message_id-1)
+		name = ctx.message.text;
+		ctx.reply('Введите короткое описание места: ',canceladd);
+		return ctx.wizard.next();
+	},
+	ctx =>{
+    ctx.deleteMessage()
+    ctx.deleteMessage(ctx.message.message_id-1)
+    desc = ctx.message.text;
+		ctx.reply('Отправьте ссылку на фото места: ',canceladd);
+		return ctx.wizard.next();
+	},
+	ctx =>{
+  	ctx.deleteMessage()
+    ctx.deleteMessage(ctx.message.message_id-1)
+    image = ctx.message.text;
+		ctx.reply('Отправьте координату x места: ',canceladd);
+		return ctx.wizard.next();
+	},
+	ctx =>{
+    ctx.deleteMessage()
+    ctx.deleteMessage(ctx.message.message_id-1)
+    x = ctx.message.text;
+		ctx.reply('Отправьте координату y места: ',canceladd);
+		return ctx.wizard.next();
+	},
+	ctx =>{
+    ctx.deleteMessage()
+    ctx.deleteMessage(ctx.message.message_id-1)
+    y = ctx.message.text;
+		ctx.reply('Название: ' + name +'\nОписание: '+desc+'\nФото: '+image+'\nКоордината x: '+x+'\nКоордината y: '+y+'\nВсё верно?',
+		{
+			reply_markup: {
+				inline_keyboard: [
+					[{text:"Подтвердить", callback_data: "acceptdb"}],
+					[{text:"Отмена", callback_data: "canceldb"}]
+				]
+			}
+		});
+		return ctx.scene.leave();
+	}
+)
 
-  setTimeout(() => {
-    ctx.tg.sendLocation(ctx.chat.id, locs[2].x, locs[2].y);
-  }, 2000);
+const stage = new Stage([add_data, show_cafe])
+
+stage.action('canceladd', ctx => {
+  ctx.deleteMessage()
+	ctx.reply('Отменено')
+	ctx.scene.leave()
+})
+
+bot.use(session())
+bot.use(stage.middleware())
+
+bot.action('/cafe', (ctx) => {
+  ctx.scene.enter('show-cafe')
 });
+
+bot.action('addplace', (ctx) =>{
+  ctx.reply('Что за место вы хотите добавить?', addkeyboard)
+})
+
+bot.action('cafe', ctx =>{
+	ctx.deleteMessage()
+	type = 'cafe'
+	ctx.scene.enter('add-data')
+})
+
+bot.action('place', ctx =>{
+	ctx.deleteMessage()
+	type = 'place'
+	ctx.scene.enter('add-data')
+})
+
+bot.action('acceptdb', ctx =>{
+	let place = {name: name, desc: desc, image: image, x: x, y: y, type: type}
+	mongoClient.connect(function(err, client){
+	    const db = client.db("FCIT-locations")
+	    const collection = db.collection("offerlocations")
+	    if(err) return console.log(err)
+		collection.insertOne(place, function(err, result){
+	        if(err) return console.log(err)
+	        ctx.editMessageText("Успешно добавлено в базу данных\nВаша анкета будет рассмотрена администраторами")
+    	})
+	})
+})
