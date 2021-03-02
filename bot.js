@@ -1,5 +1,5 @@
 const { Telegraf, session, Scenes:{ WizardScene, Stage}, Markup} = require('telegraf');
-const TOKEN ='1699609256:AAG1Iq8avfrlULqnmqgEzyfQd8vZsBOvLZ4' //'1663994003:AAF02oK7kVii4QSXxJ2edLdKuNUkyT47zq4'//'1699609256:AAG1Iq8avfrlULqnmqgEzyfQd8vZsBOvLZ4';
+const TOKEN ='1699609256:AAG1Iq8avfrlULqnmqgEzyfQd8vZsBOvLZ4'
 const bot = new Telegraf(TOKEN);
 const MongoClient = require('mongodb').MongoClient;
 bot.launch();
