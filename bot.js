@@ -60,11 +60,7 @@ mongoClient.connect(async function (err, client) {
   });
 });
 
-bot.message_handler;
-
-// bot.use((ctx, next) => {
 bot.on('location', (ctx) => {
-  // if (ctx.updateSubTypes == 'location') {
   let currentLat = ctx.update.message.location.latitude;
   let currentLon = ctx.update.message.location.longitude;
 
@@ -139,4 +135,14 @@ bot.on('location', (ctx) => {
 
 bot.action('/cafe', (ctx, next) => {
   ctx.reply('Hiiii');
+
+  ctx.replyWithPhoto({ url: locs[2].image });
+
+  setTimeout(() => {
+    ctx.reply(locs[2].name + ' - ' + locs[2].desc);
+  }, 1000);
+
+  setTimeout(() => {
+    ctx.tg.sendLocation(ctx.chat.id, locs[2].x, locs[2].y);
+  }, 2000);
 });
