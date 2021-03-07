@@ -88,7 +88,8 @@ const show_place = new WizardScene(
   ctx =>{
     ctx.deleteMessage()
     ctx.scene.leave()
-    if(callback_data='more') ctx.scene.enter('show-place')
+    if( ctx.callbackQuery.data == 'more') ctx.scene.enter('show-place')
+    else if(ctx.callbackQuery.data =='canceldb') ctx.reply('Що Ви бажаєте зробити?', mainkeyboard)
   }
 )
 
@@ -307,4 +308,5 @@ bot.hears('Подтвердить', ctx =>{
 bot.on('message', ctx =>{
   ctx.deleteMessage()
 })
+
 bot.launch();
