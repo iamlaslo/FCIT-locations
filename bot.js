@@ -1,113 +1,11 @@
-const { Telegraf } = require('telegraf');
-const TOKEN = '1699609256:AAG1Iq8avfrlULqnmqgEzyfQd8vZsBOvLZ4';
+<<<<<<< Updated upstream
+const { Telegraf, session, Scenes:{ WizardScene, Stage}, Markup} = require('telegraf');
+const TOKEN = '1699609256:AAG1Iq8avfrlULqnmqgEzyfQd8vZsBOvLZ4'//'1663994003:AAF02oK7kVii4QSXxJ2edLdKuNUkyT47zq4' //main '1699609256:AAG1Iq8avfrlULqnmqgEzyfQd8vZsBOvLZ4'
 const bot = new Telegraf(TOKEN);
 const MongoClient = require('mongodb').MongoClient;
-bot.launch();
-
-// const locations = [
-//   {
-//     name: 'Дерибасовская',
-//     desc: 'главная улица города',
-//     photo:
-//       'https://t-cf.bstatic.com/xdata/images/hotel/max1024x768/195719302.webp?k=67e97c182fb883b3f4a69d1bf926cd3872314f92bf112ab873a0d13af0786868&o=',
-//     x: 46.484151216117205,
-//     y: 30.738651779259055,
-//   },
-//   {
-//     name: 'Daily',
-//     desc: 'городская кофейня, попавшая в топ-10 самых красивых кофеен мира',
-//     photo:
-//       'https://www.buro247.ua/images/2019/04/daily-cafe-sivak-partners-ukraine-interiors-_dezeen_2364_col_3.jpg',
-//     x: 46.47600387568431,
-//     y: 30.739892311800222,
-//   },
-// ];
-
-// const cafe = [
-//   {
-//     name: 'Daily',
-//     desc: 'городская кофейня, попавшая в топ-10 самых красивых кофеен мира',
-//     photo:
-//       'https://www.buro247.ua/images/2019/04/daily-cafe-sivak-partners-ukraine-interiors-_dezeen_2364_col_3.jpg',
-//     x: 46.47600387568431,
-//     y: 30.739892311800222,
-//   },
-// ];
-
-// bot.use((ctx, next) => {
-//   console.log('Bot was used');
-//   next();
-// });
-
-bot.start(async (ctx) => {
-  console.log('Bot was used');
-
-  ctx.reply('Добро пожаловать!', {
-    reply_markup: {
-      inline_keyboard: [
-        [
-          { text: 'Кафе', callback_data: '/cafe', resize_keyboard: true },
-          {
-            text: 'Достопримечательность',
-            callback_data: '/location',
-            resize_keyboard: true,
-          },
-        ],
-      ],
-    },
-  });
-  ctx.reply('Куда вы хотите сходить?', {
-    reply_markup: {
-      keyboard: [
-        [
-          {
-            text: 'Найти ближайшие',
-            request_location: true,
-            callback_data: '/try',
-            resize_keyboard: true,
-          },
-        ],
-      ],
-    },
-  });
-});
-
-// bot.use((ctx) => {
-//   console.log(ctx);
-// });
-
-// bot.command('/try', (ctx) => {
-//   console.log(ctx);
-// });
-
-// bot.action('/location', (ctx) => {
-//   ctx.replyWithPhoto({ url: locations[0].photo });
-
-//   setTimeout(() => {
-//     ctx.reply(locations[0].name + ' - ' + locations[0].desc);
-//   }, 1000);
-
-//   setTimeout(() => {
-//     ctx.tg.sendLocation(ctx.chat.id, locations[0].x, locations[0].y);
-//   }, 2000);
-// });
-
-// bot.action('/cafe', (ctx) => {
-//   ctx.replyWithPhoto({ url: cafe[0].photo });
-
-//   setTimeout(() => {
-//     ctx.reply(cafe[0].name + ' - ' + cafe[0].desc);
-//   }, 1000);
-
-//   setTimeout(() => {
-//     ctx.tg.sendLocation(ctx.chat.id, cafe[0].x, cafe[0].y);
-//   }, 2000);
-// });
-
-let locs = [];
 
 const mongoClient = new MongoClient(
-  /*"mongodb://localhost:27017"*/ 'mongodb+srv://vlad:vlad123@cluster0.zfcnq.mongodb.net/test',
+  'mongodb+srv://vlad:vlad123@cluster0.zfcnq.mongodb.net/test',
   { useUnifiedTopology: true }
 );
 
@@ -118,7 +16,6 @@ mongoClient.connect(async function (err, client) {
   collection.find().toArray(async function (err, results) {
     if (err) return console.log(err);
     res = results;
-    res;
     if (res.length > 0) {
       for (doc of res) {
         locs.push(await doc);
@@ -127,48 +24,308 @@ mongoClient.connect(async function (err, client) {
   });
 });
 
-// bot.command('/lol', (ctx) => {
-//   console.log(locs);
+canceladd = {reply_markup: {
+  resize_keyboard: true,
+  one_time_keyboard: true,
+  keyboard: [ [{text:"Отмена"}] ]
+}}
+
+addkeyboard = {reply_markup:{
+  inline_keyboard:[
+  [{text:"Кафе", callback_data: "cafe"}],
+  [{text:"Достопримечательность", callback_data: "place"}]
+  ]
+}}
+
+more = {reply_markup:{
+  inline_keyboard:[
+  [{text:"Ещё", callback_data: "more"}, {text: "Отмена", callback_data: "canceldb"}]
+  ]
+}}
+
+locationkeyboard = {reply_markup:{
+  resize_keyboard: true,
+  one_time_keyboard: true,
+  keyboard: [ 
+    [{text: 'Поделиться локацией', request_location: true}]
+  ]
+}}
+
+=======
+const {
+  Telegraf,
+  session,
+  Scenes: { WizardScene, Stage },
+  Markup,
+} = require('telegraf');
+const TOKEN = '1699609256:AAG1Iq8avfrlULqnmqgEzyfQd8vZsBOvLZ4';
+const bot = new Telegraf(TOKEN);
+const MongoClient = require('mongodb').MongoClient;
+
+const mongo = require('./mongo.js');
+
+console.log(mongo.db());
+
+mongo.db();
+// const mongoClient = new MongoClient(
+//   'mongodb+srv://vlad:vlad123@cluster0.zfcnq.mongodb.net/test',
+//   { useUnifiedTopology: true }
+// );
+
+// mongoClient.connect(async function (err, client) {
+//   const db = client.db('FCIT-locations');
+//   const collection = db.collection('locations');
+//   if (err) return console.log(err);
+//   collection.find().toArray(async function (err, results) {
+//     if (err) return console.log(err);
+//     res = results;
+//     if (res.length > 0) {
+//       for (doc of res) {
+//         locs.push(await doc);
+//       }
+//     }
+//   });
 // });
 
-bot.use((ctx, next) => {
-  if (ctx.update.message.location != undefined) {
-    let min1x = 49.491873765473976;
-    let min1y = 49.491873765473976;
-    let min2x = 49.491873765473976;
-    let min2y = 49.491873765473976;
-    let min3x = 49.491873765473976;
-    let min3y = 49.491873765473976;
+canceladd = {
+  reply_markup: {
+    inline_keyboard: [[{ text: 'Отмена', callback_data: 'canceladd' }]],
+  },
+};
 
-    let loc1;
-    let loc2;
-    let loc3;
+addkeyboard = {
+  reply_markup: {
+    inline_keyboard: [
+      [{ text: 'Кафе', callback_data: 'cafe' }],
+      [{ text: 'Достопримечательность', callback_data: 'place' }],
+    ],
+  },
+};
 
-    let vectLoc = 0;
-    let vectPlace = 0;
-    let vectDist1 = 500.123;
-    let vectDist2 = 500.123;
-    let vectDist3 = 500.123;
+more = {
+  reply_markup: {
+    inline_keyboard: [
+      [
+        { text: 'Ещё', callback_data: 'more' },
+        { text: 'Отмена', callback_data: 'canceladd' },
+      ],
+    ],
+  },
+};
 
-    let tempx = 0,
-      tempy = 0;
-    let near = [];
+locationkeyboard = {
+  reply_markup: {
+    resize_keyboard: true,
+    one_time_keyboard: true,
+    keyboard: [[{ text: 'Поделиться локацией', request_location: true }]],
+  },
+};
 
+>>>>>>> Stashed changes
+mainkeyboard = {
+  reply_markup: {
+    inline_keyboard: [
+      [
+        { text: 'Кафе', callback_data: '/cafe', resize_keyboard: true },
+        {
+          text: 'Достопримечательность',
+          callback_data: '/place',
+          resize_keyboard: true,
+        },
+      ],
+<<<<<<< Updated upstream
+      [{text: "Добавить место", callback_data: 'addplace'}],
+      [{text: 'Найти ближайшие', callback_data: 'showlocation'}]
+    ]
+  }
+}
+
+i = 0
+const show_place = new WizardScene(
+  'show-place',
+  ctx =>{
+    ctx.replyWithPhoto( locs[i].image );
+=======
+      [{ text: 'Добавить место', callback_data: 'addplace' }],
+      [{ text: 'Найти ближайшие', callback_data: 'showlocation' }],
+    ],
+  },
+};
+
+bot.command('start', async (ctx) => {
+  // try {
+  //   for (let j = 0; j <= 50; j++) {
+  //     ctx.deleteMessage(ctx.message.message_id - j);
+  //   }
+  // } catch (err) {
+  //   console.log(err);
+  // }
+
+  console.log('Bot was used');
+  ctx.reply('Добро пожаловать!', mainkeyboard);
+});
+
+bot.on('location', (ctx) => {
+  ctx.deleteMessage(ctx.message.message_id - 1);
+  let currentLat = ctx.update.message.location.latitude;
+  let currentLon = ctx.update.message.location.longitude;
+
+  findNear = (lat1, lon1, lat2, lon2, place) => {
+    const R = 6371e3; // metres
+    const φ1 = (lat1 * Math.PI) / 180; // φ, λ in radians
+    const φ2 = (lat2 * Math.PI) / 180;
+    const Δφ = ((lat2 - lat1) * Math.PI) / 180;
+    const Δλ = ((lon2 - lon1) * Math.PI) / 180;
+
+    const a =
+      Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+      Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+    const d = R * c;
+    place.distance = d;
+    Math.floor(place.distance);
+    place.time = place.distance / 1.1 / 60;
+  };
+  for (place of locs) {
+    findNear(currentLat, currentLon, place.x, place.y, place);
+    console.log(place.distance);
+  }
+
+  locs.sort((a, b) =>
+    a.distance > b.distance
+      ? 1
+      : a.distance === b.distance
+      ? a.size > b.size
+        ? 1
+        : -1
+      : -1
+  );
+
+  console.log(locs);
+
+  setTimeout(() => {
+    ctx.replyWithPhoto({ url: locs[0].image });
+
+    setTimeout(() => {
+      ctx.reply(
+        locs[0].name +
+          ' - ' +
+          locs[0].desc +
+          ' - ' +
+          Math.floor(locs[0].distance) +
+          ' метрiв' +
+          ' - ' +
+          Math.floor(locs[0].time) +
+          ' хвилин'
+      );
+    }, 1000);
+
+    setTimeout(() => {
+      ctx.tg.sendLocation(ctx.chat.id, locs[0].x, locs[0].y);
+    }, 2000);
+  }, 1000);
+
+  setTimeout(() => {
+    ctx.replyWithPhoto({ url: locs[1].image });
+
+    setTimeout(() => {
+      ctx.reply(
+        locs[1].name +
+          ' - ' +
+          locs[1].desc +
+          ' - ' +
+          Math.floor(locs[1].distance) +
+          ' метрiв' +
+          ' - ' +
+          Math.floor(locs[1].time) +
+          ' хвилин'
+      );
+    }, 1000);
+
+    setTimeout(() => {
+      ctx.tg.sendLocation(ctx.chat.id, locs[1].x, locs[1].y);
+    }, 2000);
+  }, 3000);
+
+  setTimeout(() => {
+    ctx.replyWithPhoto({ url: locs[2].image });
+
+    setTimeout(() => {
+      ctx.reply(
+        locs[2].name +
+          ' - ' +
+          locs[2].desc +
+          ' - ' +
+          Math.floor(locs[2].distance) +
+          ' метрiв' +
+          ' - ' +
+          Math.floor(locs[2].time) +
+          ' хвилин'
+      );
+    }, 1000);
+
+    setTimeout(() => {
+      ctx.tg.sendLocation(ctx.chat.id, locs[2].x, locs[2].y);
+    }, 2000);
+    setTimeout(() => {
+      ctx.reply('Что хотите сделать?', mainkeyboard);
+    }, 3000);
+  }, 6000);
+});
+
+bot.action('showlocation', (ctx) => {
+  ctx.deleteMessage();
+  ctx.reply('Пожалуйста покажите, где Вы', locationkeyboard);
+});
+
+i = 0;
+const show_place = new WizardScene(
+  'show-place',
+  (ctx) => {
+    ctx.replyWithPhoto({ url: locs[i].image });
+>>>>>>> Stashed changes
+    setTimeout(() => {
+      ctx.reply(locs[i].name + ' - ' + locs[i].desc);
+    }, 1000);
+    setTimeout(() => {
+      ctx.tg.sendLocation(ctx.chat.id, locs[i].x, locs[i].y);
+    }, 2000);
+    setTimeout(() => {
+      if (i === res.length - 1) i = 0;
+      else i++;
+      ctx.reply('Показать ещё?', more);
+    }, 3000);
+    return ctx.wizard.next();
+  },
+<<<<<<< Updated upstream
+  ctx =>{
+    ctx.deleteMessage()
+    ctx.scene.leave()
+    if( ctx.callbackQuery.data == 'more') ctx.scene.enter('show-place')
+    else if(ctx.callbackQuery.data =='canceldb') ctx.reply('Що Ви бажаєте зробити?', mainkeyboard)
+  }
+)
+
+const findlclose = new WizardScene(
+  'find-close',
+  ctx=>{
+    ctx.deleteMessage(ctx.message.message_id-1)
     let currentLat = ctx.update.message.location.latitude;
     let currentLon = ctx.update.message.location.longitude;
-
+  
     findNear = (lat1, lon1, lat2, lon2, place) => {
       const R = 6371e3; // metres
       const φ1 = (lat1 * Math.PI) / 180; // φ, λ in radians
       const φ2 = (lat2 * Math.PI) / 180;
       const Δφ = ((lat2 - lat1) * Math.PI) / 180;
       const Δλ = ((lon2 - lon1) * Math.PI) / 180;
-
+  
       const a =
         Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
         Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
       const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
+  
       const d = R * c;
       place.distance = d;
     };
@@ -176,44 +333,7 @@ bot.use((ctx, next) => {
       findNear(currentLat, currentLon, place.x, place.y, place);
       console.log(place.distance);
     }
-
-    // function sortResults(prop, asc) {
-    //   locs.sort(function (a, b) {
-    //     if (asc) {
-    //       return a[prop] > b[prop] ? 1 : a[prop] < b[prop] ? -1 : 0;
-    //     } else {
-    //       return b[prop] > a[prop] ? 1 : b[prop] < a[prop] ? -1 : 0;
-    //     }
-    //   });
-    // }
-    // const sortAsc = (arr, field) => {
-    //   return arr.sort((a, b) => {
-    //     if (a[distance] > b[distance]) {
-    //       return 1;
-    //     }
-    //     if (b[distance] > a[distance]) {
-    //       return -1;
-    //     }
-    //     return 0;
-    //   });
-    // };
-
-    // for (loc of locs) {
-    //   locs.sort((a, b) => {
-    //     if (a.distance > b.distance) {
-    //       return 1;
-    //     }
-    //     if (b.distance > a.distance) {
-    //       return -1;
-    //     }
-    //     return 0;
-    //   });
-    // }
-
-    // locs.sort(function (a, b) {
-    //   return obj[a] - obj[b];
-    // });
-
+  
     locs.sort((a, b) =>
       a.distance > b.distance
         ? 1
@@ -223,145 +343,298 @@ bot.use((ctx, next) => {
           : -1
         : -1
     );
-
-    // distance = locs.distance;
-
-    // sortAsc(locs, locs.distance);
-
+  
     console.log(locs);
-
-    // for (place of locs) {
-    //   vectLoc =
-    //     ctx.update.message.location.latitude +
-    //     ctx.update.message.location.altitude;
-    //   vectPlace = place.x + place.y;
-
-    //   if (vectLoc - vectPlace < vectDist1) {
-    //     vectDist1 = vectLoc;
-    //     loc1 = place;
-    //   } else if (vectLoc - vectPlace < vectDist2) {
-    //     vectDist2 = vectLoc;
-    //     loc2 = place;
-    //   } else if (vectLoc - vectPlace < vectDist3) {
-    //     vectDist3 = vectLoc;
-    //     loc3 = place;
-    //   }
-    // }
-
-    // for (place of locs) {
-    //   loc1 = place.find(
-    //     (xy) =>
-    //       (xy =
-    //         ctx.update.message.location.latitude +
-    //         ctx.update.message.location.altitude)
-    //   );
-    // }
-
-    //   foo.sort (function (a,b) {
-    //     return 2 * (a.a > b.a ? 1 : a.a < b.a ? -1 : 0) + 1 * (a.b > b.b ? 1 : a.b < b.b ? -1 : 0)
-    // })
-
-    // locs.sort(function (a, b) {
-    //   return a.x - b.x;
-    // });
-
-    // for (place of locs) {
-    //   tempx = place.x - ctx.update.message.location.latitude;
-    //   if (tempx < min1x || tempy < min1y) {
-    //     min1x = tempx;
-    //   }
-    // }
-
-    // console.log(locs);
-
-    // Поиск ближайших мест
-    // for (place of locs) {
-    //   // tempx = place.x - ctx.update.message.location.latitude;
-    //   // if (tempx < min1x || tempy < min1y) {
-    //   //   min1x = tempx;
-    //   //   min1y = tempy;
-    //   // } else min2x = tempx;
-    //   // tempy = place.y - ctx.update.message.location.longitude;
-    //   // if (tempy < min1y) {
-    //   //   min1y = tempy;
-    //   // } else {
-    //   //   min2y = tempy;
-    //   // }
-    //   //   if (
-    //   //     min1x > ctx.update.message.location.latitude &&
-    //   //     min1y > ctx.update.message.location.longitude &&
-    //   //     place.x - ctx.update.message.location.latitude
-    //   //   ) {
-    //   //     loc1 = place;
-    //   //     console.log(place);
-    //   //     min1x = ctx.update.message.location.latitude;
-    //   //     min1y = ctx.update.message.location.longitude;
-    //   //   } else if (
-    //   //     min2x > ctx.update.message.location.latitude &&
-    //   //     min2y > ctx.update.message.location.longitude &&
-    //   //     min2x != min1x &&
-    //   //     min2y != min1y
-    //   //   ) {
-    //   //     loc2 = place;
-    //   //     min2x = ctx.update.message.location.latitude;
-    //   //     min2y = ctx.update.message.location.longitude;
-    //   //   } else if (
-    //   //     min3x > ctx.update.message.location.latitude &&
-    //   //     min3y > ctx.update.message.location.longitude &&
-    //   //     min3x != min1x &&
-    //   //     min3y != min1y &&
-    //   //     min3x != min2x &&
-    //   //     min3y != min2y
-    //   //   ) {
-    //   //     loc3 = place;
-    //   //     min3x = ctx.update.message.location.latitude;
-    //   //     min3y = ctx.update.message.location.longitude;
-    //   //   }
-    // }
-
-    // Вывод ближайших мест
-
+  
     setTimeout(() => {
       ctx.replyWithPhoto({ url: locs[0].image });
-
+  
       setTimeout(() => {
         ctx.reply(locs[0].name + ' - ' + locs[0].desc);
       }, 1000);
-
+  
       setTimeout(() => {
         ctx.tg.sendLocation(ctx.chat.id, locs[0].x, locs[0].y);
       }, 2000);
     }, 1000);
-
+  
     setTimeout(() => {
       ctx.replyWithPhoto({ url: locs[1].image });
-
+  
       setTimeout(() => {
         ctx.reply(locs[1].name + ' - ' + locs[1].desc);
       }, 1000);
-
+  
       setTimeout(() => {
         ctx.tg.sendLocation(ctx.chat.id, locs[1].x, locs[1].y);
       }, 2000);
     }, 3000);
-
+  
     setTimeout(() => {
       ctx.replyWithPhoto({ url: locs[2].image });
-
+  
       setTimeout(() => {
         ctx.reply(locs[2].name + ' - ' + locs[2].desc);
       }, 1000);
-
+  
       setTimeout(() => {
         ctx.tg.sendLocation(ctx.chat.id, locs[2].x, locs[2].y);
       }, 2000);
+      setTimeout(() => {
+        ctx.reply('Что хотите сделать?', mainkeyboard)
+      }, 3000);
     }, 6000);
+    ctx.scene.leave()
+=======
+  (ctx) => {
+    ctx.deleteMessage();
+    ctx.scene.leave();
+    if ((callback_data = 'more')) ctx.scene.enter('show-place');
+>>>>>>> Stashed changes
   }
+);
 
-  next();
+const add_data = new WizardScene(
+<<<<<<< Updated upstream
+	'add-data',
+	ctx => {
+		ctx.reply('Введите название места: ',canceladd);
+		return ctx.wizard.next();
+	},
+	ctx =>{
+    ctx.deleteMessage()
+    ctx.deleteMessage(ctx.message.message_id-1)
+		name = ctx.message.text;
+		ctx.reply('Введите короткое описание места: ', canceladd);
+		return ctx.wizard.next();
+	},
+	ctx =>{
+    t=0
+    ctx.deleteMessage()
+    ctx.deleteMessage(ctx.message.message_id-1)
+    desc = ctx.message.text;
+		ctx.reply('Отправьте фото места: ', canceladd);
+		return ctx.wizard.next();
+	},
+	ctx =>{
+    if (ctx.message.photo || t==1){
+    t=0
+  	ctx.deleteMessage()
+    ctx.deleteMessage(ctx.message.message_id-1)
+    if (ctx.message.photo)image = ctx.message.photo[ctx.message.photo.length-1].file_id
+		ctx.reply('Отправьте геолокацию места: ', canceladd)
+		return ctx.wizard.next();
+    } else {
+      ctx.wizard.back()
+      return ctx.wizard.steps[ctx.wizard.cursor](ctx)
+    }
+	},
+	ctx =>{
+      if(ctx.message.location){
+      ctx.deleteMessage()
+      ctx.deleteMessage(ctx.message.message_id-1)
+      x = ctx.message.location.latitude
+      y = ctx.message.location.longitude
+      ctx.replyWithPhoto(image)
+      setTimeout(() => {
+      ctx.reply('Название: ' + name +'\nОписание: '+desc+'\nКоордината x: '+x+'\nКоордината y: '+y+'\nВсё верно?',
+      {
+        reply_markup: {
+            resize_keyboard: true,
+            one_time_keyboard: true,
+          keyboard: [
+            [{text:"Подтвердить"}],
+            [{text:"Отмена"}]
+          ]
+        }
+      });
+      }, 1000);
+      dbaccepted=1
+      return ctx.scene.leave();
+    }else {
+      t=1
+      ctx.wizard.back()
+      return ctx.wizard.steps[ctx.wizard.cursor](ctx)
+    }
+  }
+)
+
+const stage = new Stage([add_data, show_place, findlclose])
+
+stage.hears('Отмена', ctx => {
+  ctx.deleteMessage()
+  ctx.deleteMessage(ctx.message.message_id-1)
+	ctx.scene.leave()
+  ctx.reply('Что хотите сделать?', mainkeyboard)
+=======
+  'add-data',
+  (ctx) => {
+    ctx.reply('Введите название места: ', canceladd);
+    return ctx.wizard.next();
+  },
+  (ctx) => {
+    ctx.deleteMessage();
+    ctx.deleteMessage(ctx.message.message_id - 1);
+    name = ctx.message.text;
+    ctx.reply('Введите короткое описание места: ', canceladd);
+    return ctx.wizard.next();
+  },
+  (ctx) => {
+    ctx.deleteMessage();
+    ctx.deleteMessage(ctx.message.message_id - 1);
+    desc = ctx.message.text;
+    ctx.reply('Отправьте ссылку на фото места: ', canceladd);
+    return ctx.wizard.next();
+  },
+  (ctx) => {
+    ctx.deleteMessage();
+    ctx.deleteMessage(ctx.message.message_id - 1);
+    image = ctx.message.text;
+    ctx.reply('Отправьте координату x места: ', canceladd);
+    return ctx.wizard.next();
+  },
+  (ctx) => {
+    ctx.deleteMessage();
+    ctx.deleteMessage(ctx.message.message_id - 1);
+    x = ctx.message.text;
+    ctx.reply('Отправьте координату y места: ', canceladd);
+    return ctx.wizard.next();
+  },
+  (ctx) => {
+    ctx.deleteMessage();
+    ctx.deleteMessage(ctx.message.message_id - 1);
+    y = ctx.message.text;
+    ctx.reply(
+      'Название: ' +
+        name +
+        '\nОписание: ' +
+        desc +
+        '\nФото: ' +
+        image +
+        '\nКоордината x: ' +
+        x +
+        '\nКоордината y: ' +
+        y +
+        '\nВсё верно?',
+      {
+        reply_markup: {
+          inline_keyboard: [
+            [{ text: 'Подтвердить', callback_data: 'acceptdb' }],
+            [{ text: 'Отмена', callback_data: 'canceldb' }],
+          ],
+        },
+      }
+    );
+    return ctx.scene.leave();
+  }
+);
+
+const stage = new Stage([add_data, show_place]);
+
+stage.action('canceladd', (ctx) => {
+  ctx.deleteMessage();
+  ctx.scene.leave();
+  ctx.reply('Что хотите сделать?', mainkeyboard);
+>>>>>>> Stashed changes
 });
 
-bot.command('/o', (ctx) => {
-  ph = 'https://upload.wikimedia.org/wikipedia/commons/5/5e/Operniy-5.jpg';
-  ctx.replyWithPhoto({ url: ph });
+bot.use(session());
+bot.use(stage.middleware());
+
+
+bot.command('start', async (ctx) => {
+  for(let j=0;j<=50;j++) {
+    ctx.deleteMessage(ctx.message.message_id-j);
+  }
+    console.log('Bot was used');
+    ctx.reply('Добро пожаловать!', mainkeyboard)
 });
+  
+let locs = [];
+
+bot.action('showlocation', ctx =>{
+    ctx.deleteMessage()
+    ctx.reply('Пожалуйста покажите, где Вы', locationkeyboard)
+    ctx.scene.enter('find-close')
+})
+
+bot.action('/place', (ctx) => {
+  ctx.deleteMessage();
+  ctx.scene.enter('show-place');
+});
+
+bot.action('addplace', (ctx) => {
+  ctx.deleteMessage();
+  ctx.reply('Что за место вы хотите добавить?', addkeyboard);
+});
+
+bot.action('cafe', (ctx) => {
+  ctx.deleteMessage();
+  type = 'cafe';
+  ctx.scene.enter('add-data');
+});
+
+bot.action('place', (ctx) => {
+  ctx.deleteMessage();
+  type = 'place';
+  ctx.scene.enter('add-data');
+});
+
+bot.action('acceptdb', (ctx) => {
+  let place = { name: name, desc: desc, image: image, x: x, y: y, type: type };
+  mongoClient.connect(function (err, client) {
+    const db = client.db('FCIT-locations');
+    const collection = db.collection('offerlocations');
+    if (err) return console.log(err);
+    collection.insertOne(place, function (err, result) {
+      if (err) return console.log(err);
+      ctx.editMessageText(
+        'Успешно добавлено в базу данных\nВаша анкета будет рассмотрена администраторами',
+        mainkeyboard
+      );
+    });
+  });
+});
+
+<<<<<<< Updated upstream
+bot.action('addplace', (ctx) =>{
+  ctx.deleteMessage()
+  ctx.reply('Что за место вы хотите добавить?', addkeyboard)
+})
+
+bot.action('cafe', ctx =>{
+	ctx.deleteMessage()
+	type = 'cafe'
+	ctx.scene.enter('add-data')
+})
+
+bot.action('place', ctx =>{
+	ctx.deleteMessage()
+	type = 'place'
+	ctx.scene.enter('add-data')
+})
+
+bot.hears('Подтвердить', ctx =>{
+  if(dbaccepted!==1) return
+	else {
+  let place = {name: name, desc: desc, image: image, x: x, y: y, type: type}
+	mongoClient.connect(function(err, client){
+	    const db = client.db("FCIT-locations")
+	    const collection = db.collection("offerlocations")
+	    if(err) return console.log(err)
+		  collection.insertOne(place, function(err, result){
+	        if(err) return console.log(err)
+	        ctx.reply("Успешно добавлено в базу данных\nВаша анкета будет рассмотрена администраторами", mainkeyboard)
+    	})
+	})
+  }
+})
+
+bot.on('message', ctx =>{
+  ctx.deleteMessage()
+})
+
+bot.launch();
+=======
+bot.launch();
+>>>>>>> Stashed changes
