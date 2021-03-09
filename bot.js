@@ -51,7 +51,7 @@ locationkeyboard = {reply_markup:{
   ]
 }}
 
-=======
+//=======
 const {
   Telegraf,
   session,
@@ -121,7 +121,7 @@ locationkeyboard = {
   },
 };
 
->>>>>>> Stashed changes
+//>>>>>>> Stashed changes
 mainkeyboard = {
   reply_markup: {
     inline_keyboard: [
@@ -145,7 +145,7 @@ const show_place = new WizardScene(
   'show-place',
   ctx =>{
     ctx.replyWithPhoto( locs[i].image );
-=======
+//=======
       [{ text: 'Добавить место', callback_data: 'addplace' }],
       [{ text: 'Найти ближайшие', callback_data: 'showlocation' }],
     ],
@@ -284,7 +284,7 @@ const show_place = new WizardScene(
   'show-place',
   (ctx) => {
     ctx.replyWithPhoto({ url: locs[i].image });
->>>>>>> Stashed changes
+//>>>>>>> Stashed changes
     setTimeout(() => {
       ctx.reply(locs[i].name + ' - ' + locs[i].desc);
     }, 1000);
@@ -298,7 +298,7 @@ const show_place = new WizardScene(
     }, 3000);
     return ctx.wizard.next();
   },
-<<<<<<< Updated upstream
+//<<<<<<< Updated upstream
   ctx =>{
     ctx.deleteMessage()
     ctx.scene.leave()
@@ -385,17 +385,17 @@ const findlclose = new WizardScene(
       }, 3000);
     }, 6000);
     ctx.scene.leave()
-=======
+//=======
   (ctx) => {
     ctx.deleteMessage();
     ctx.scene.leave();
     if ((callback_data = 'more')) ctx.scene.enter('show-place');
->>>>>>> Stashed changes
+//>>>>>>> Stashed changes
   }
 );
 
 const add_data = new WizardScene(
-<<<<<<< Updated upstream
+//<<<<<<< Updated upstream
 	'add-data',
 	ctx => {
 		ctx.reply('Введите название места: ',canceladd);
@@ -466,7 +466,7 @@ stage.hears('Отмена', ctx => {
   ctx.deleteMessage(ctx.message.message_id-1)
 	ctx.scene.leave()
   ctx.reply('Что хотите сделать?', mainkeyboard)
-=======
+//=======
   'add-data',
   (ctx) => {
     ctx.reply('Введите название места: ', canceladd);
@@ -535,7 +535,7 @@ stage.action('canceladd', (ctx) => {
   ctx.deleteMessage();
   ctx.scene.leave();
   ctx.reply('Что хотите сделать?', mainkeyboard);
->>>>>>> Stashed changes
+//>>>>>>> Stashed changes
 });
 
 bot.use(session());
@@ -596,7 +596,7 @@ bot.action('acceptdb', (ctx) => {
   });
 });
 
-<<<<<<< Updated upstream
+//<<<<<<< Updated upstream
 bot.action('addplace', (ctx) =>{
   ctx.deleteMessage()
   ctx.reply('Что за место вы хотите добавить?', addkeyboard)
@@ -635,6 +635,6 @@ bot.on('message', ctx =>{
 })
 
 bot.launch();
-=======
+//=======
 bot.launch();
->>>>>>> Stashed changes
+//>>>>>>> Stashed changes
